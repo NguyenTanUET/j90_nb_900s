@@ -10,7 +10,7 @@ COPY requirements.txt .
 # Lưu ý: cplex trên PyPI đã bao gồm cả engine (nếu bạn đã làm chạy local chỉ với "pip install cplex")
 RUN pip install --upgrade pip \
  && pip install --no-cache-dir -r requirements.txt \
- && pip install --no-cache-dir google-cloud-storage \
+ && pip install --no-cache-dir google-cloud-storage
 
 # --- STEP 4: Copy toàn bộ source code và data vào container
 COPY . .
