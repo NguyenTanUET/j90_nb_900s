@@ -10,7 +10,7 @@ This script:
 1. Finds all .data files in the data directory starting from j9029_4.data
 2. Solves each RCPSP instance using the CP Optimizer with a fixed time limit per instance
 3. Does NOT use any provided optimal bounds (minimizes makespan freely)
-4. Records results in result/j90_no_bound_2.csv with columns:
+4. Records results in result/j90_no_bound_900s.csv with columns:
    - file name (just the filename, not the path)
    - Model constraint (makespan found)
    - Status (optimal/feasible/unknown)
@@ -123,7 +123,7 @@ def main():
     # Define directories - changed to data directory
     data_dir = Path("data")
     result_dir = Path("result")
-    output_file = result_dir / "j90_no_bound_2.csv"
+    output_file = result_dir / "j90_no_bound_900s.csv"
 
     # Create result directory if it doesn't exist
     os.makedirs(result_dir, exist_ok=True)
@@ -141,8 +141,8 @@ def main():
     # Sort files to ensure consistent order
     all_data_files.sort()
 
-    # Find the index of j9029_4.data and filter files from that point onward
-    start_file = "j9029_4.data"
+    # Find the index of j9010_1.data and filter files from that point onward
+    start_file = "j9010_1.data"
     start_index = None
 
     for i, file_path in enumerate(all_data_files):
@@ -213,6 +213,17 @@ def main():
 
     print(f"\nAll done! Results written to {output_file}")
 
+    # Tên bucket mà bạn đã tạo
+    bucket_name = "rcpsp-results-bucket"
+    client = storage.Client()
+    bucket = client.bucket(bucket_name)
+
+    local_path = "result/j90_no_bound_900s.csv"
+    blob_name = f"results/{os.path.basename(local_path)}"  # ví dụ "results/j30_no_bound_1200s.csv"
+
+    blob = bucket.blob(blob_name)
+    blob.upload_from_filename(local_path)
+    print(f"Uploaded {local_path} to gs://{bucket_name}/{blob_name}")
 
 if __name__ == "__main__":
     main()
